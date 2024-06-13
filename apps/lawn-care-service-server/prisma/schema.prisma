@@ -1,0 +1,44 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Client {
+  createdAt   DateTime   @default(now())
+  email       String?
+  id          String     @id @default(cuid())
+  name        String?
+  phoneNumber String?
+  schedules   Schedule[]
+  updatedAt   DateTime   @updatedAt
+}
+
+model Schedule {
+  client        Client?             @relation(fields: [clientId], references: [id])
+  clientId      String?
+  createdAt     DateTime            @default(now())
+  date          DateTime?
+  id            String              @id @default(cuid())
+  lawnService   LawnService?        @relation(fields: [lawnServiceId], references: [id])
+  lawnServiceId String?
+  status        EnumScheduleStatus?
+  updatedAt     DateTime            @updatedAt
+}
+
+model LawnService {
+  createdAt   DateTime   @default(now())
+  description String?
+  id          String     @id @default(cuid())
+  price       Float?
+  schedules   Schedule[]
+  serviceName String?
+  updatedAt   DateTime   @updatedAt
+}
+
+enum EnumScheduleStatus {
+  Option1
+}
